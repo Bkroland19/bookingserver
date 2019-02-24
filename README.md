@@ -48,13 +48,14 @@ Download
 [Booking test utility](https://maps-booking.googlesource.com/maps-booking-v3/).
 To install it, follow the provided installation instructions in its README page.
 
-For the tests, you need to create a text file to store your credentials.
-Put your username and password there in one line, e.g. cred.txt file:
+For the tests, you need to create a text file to store your credentials. Put
+your username and password there in one line, e.g. cred.txt file:
 
-username:password
+      username:password
 
 You also need an availability feed for your test merchants. In our sample
-commands below, we saved it as avail.json filename.
+commands below, we saved it with the filename avail.json. For Order-based test
+client, you also need a services feed.
 
 Now, you can test your Booking Server with these commands:
 
@@ -70,6 +71,11 @@ Now, you can test your Booking Server with these commands:
 
         bin/bookingClient -server_addr="localhost:8080" -booking_test=true -availability_feed="./avail.json" -credentials_file="./cred.txt"
 
-As you are working on implementing your own Booking Server, you may need to
-run additional tests against it (e.g. list_bookings_test, rescheduling_test,
-etc) with the goal of eventually passing all tests (-all_tests=true).
+*   Test calls to CheckOrderFulfillability and CreateOrder methods for
+    Order-based Booking Server:
+
+        bin/orderClient -server_addr="localhost:8080" -check_order_test=true -create_order_test=true -output_dir="/tmp" -availability_feed="./availability.json" -service_feed="./services.json" -credentials_file="./cred.txt"
+
+As you are working on implementing your own Booking Server, you may need to run
+additional tests against it (e.g. list_bookings_test, rescheduling_test, etc)
+with the goal of eventually passing all tests (-all_tests=true).

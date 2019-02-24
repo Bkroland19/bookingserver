@@ -166,6 +166,39 @@ const server = http.createServer((request, response) => {
                 console.log(`Error: ${e}`);
               }
               break;
+            // POST /v3/CheckOrderFulfillability/
+            // (this method is only for Order-based Booking Server)
+            case '/v3/checkorderfulfillability':
+              try {
+                responseBody = apiv3.CheckOrderFulfillability(requestBody);
+              } catch (e) {
+                // TO-DO: add a specific error handling if necessary
+                httpCode = 500;  // Internal Server Error
+                console.log(`Error: ${e}`);
+              }
+              break;
+            // POST /v3/CreateOrder/
+            // (this method is only for Order-based Booking Server)
+            case '/v3/createorder':
+              try {
+                responseBody = apiv3.CreateOrder(requestBody);
+              } catch (e) {
+                // TO-DO: add a specific error handling if necessary
+                httpCode = 500;  // Internal Server Error
+                console.log(`Error: ${e}`);
+              }
+              break;
+            // POST /v3/ListOrders/
+            // (this method is only for Order-based Booking Server)
+            case '/v3/listorders':
+              try {
+                responseBody = apiv3.ListOrders(requestBody);
+              } catch (e) {
+                // TO-DO: add a specific error handling if necessary
+                httpCode = 500;  // Internal Server Error
+                console.log(`Error: ${e}`);
+              }
+              break;
             // some unknown request
             default:
               httpCode = 400;  // Bad Request

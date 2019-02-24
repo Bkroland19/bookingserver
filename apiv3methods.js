@@ -152,14 +152,93 @@ function ListBookings(requestBody) {
   // TO-DO: add code to fetch all bookings for the user_id
   // ...
   // ListBookingsResponse
-  var resp = {bookings: {}};
+  var resp = {bookings: [{}]};
   const responseBody = JSON.stringify(resp);
   return responseBody;
 }
 
+
+/**
+ * CheckOrderFulfillability method (Order-based Booking Server only)
+ * https://developers.google.com/maps-booking/reference/rest-api-v3/checkorderfulfillability-method
+ * @param {string} requestBody - HTTP request body
+ * @return {string} HTTP response body
+ */
+function CheckOrderFulfillability(requestBody) {
+  // CheckOrderFulfillabilityRequest
+  const req = JSON.parse(requestBody);
+  // TO-DO: validate req, e.g. (req.merchant_id !== null)
+  // TO-DO: add code to validate individual items and calculate the total price
+  // ...
+  // CheckOrderFulfillabilityResponse
+  var resp = {
+    fulfillability: {
+      result: 'CAN_FULFILL',
+      item_fulfillability: [{}]  // individual item fullfilability
+    },
+    fees_and_taxes: {
+      price_micros: 1000000,  // total price in micros, e.g. 1USD = 1000000
+      currency_code: 'USD'
+    }
+  };
+  const responseBody = JSON.stringify(resp);
+  return responseBody;
+}
+
+/**
+ * CreateOrder method (Order-based Booking Server only)
+ * https://developers.google.com/maps-booking/reference/rest-api-v3/createorder-method
+ * @param {string} requestBody - HTTP request body
+ * @return {string} HTTP response body
+ */
+function CreateOrder(requestBody) {
+  // CreateOrderRequest
+  const req = JSON.parse(requestBody);
+  // TO-DO: validate req, e.g. (req.user_information !== null)
+  // TO-DO: check for req.idempotency_token uniqueness
+  // TO-DO: create and process the order
+  // ...
+  // CreateOrderResponse
+  var resp = {
+    order: {
+      order_id: '123',  // new order id
+      merchant_id: req.order.mercant_id,
+      item: [{}]  // populate individual LineItems, etc.
+    }
+  };
+  const responseBody = JSON.stringify(resp);
+  return responseBody;
+}
+
+/**
+ * ListOrders method (Order-based Booking Server only)
+ * https://developers.google.com/maps-booking/reference/rest-api-v3/listorders-method
+ * @param {string} requestBody - HTTP request body
+ * @return {string} HTTP response body
+ */
+function ListOrders(requestBody) {
+  // ListOrdersRequest
+  const req = JSON.parse(requestBody);
+  // TO-DO: validate req, e.g. if ("user_id" in req || "order_ids" in req)
+  // TO-DO: fetch orders for req.user_id or a list of req.order_ids
+  // ...
+  // ListOrdersResponse
+  var resp = {
+    order: [{}]  // populate all orders for the user_id or order_ids
+  };
+  const responseBody = JSON.stringify(resp);
+  return responseBody;
+}
+
+
 module.exports.HealthCheck = HealthCheck;
+// Booking-flow Booking Server methods
 module.exports.CheckAvailability = CheckAvailability;
 module.exports.CreateBooking = CreateBooking;
 module.exports.UpdateBooking = UpdateBooking;
 module.exports.GetBookingStatus = GetBookingStatus;
 module.exports.ListBookings = ListBookings;
+// Order-based Booking Server methods
+module.exports.CheckOrderFulfillability = CheckOrderFulfillability;
+module.exports.CreateOrder = CreateOrder;
+module.exports.ListOrders = ListOrders;
