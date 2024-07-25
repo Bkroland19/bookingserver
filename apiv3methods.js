@@ -1,244 +1,257 @@
-/*
- * Copyright 2018, Google Inc.
- * All rights reserved.
- *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are
- * met:
- *
- *     * Redistributions of source code must retain the above copyright
- * notice, this list of conditions and the following disclaimer.
- *     * Redistributions in binary form must reproduce the above
- * copyright notice, this list of conditions and the following disclaimer
- * in the documentation and/or other materials provided with the
- * distribution.
- *     * Neither the name of Google Inc. nor the names of its
- * contributors may be used to endorse or promote products derived from
- * this software without specific prior written permission.
- *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
- * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
- * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
- * A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
- * OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
- * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
- * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
- * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
- * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
- * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- */
+// apiv3methods.js
 
-/**
- * HealthCheck method
- * https://developers.google.com/maps-booking/reference/rest-api-v3/healthcheck-method
- * @param {string} requestBody - HTTP request body
- * @return {string} HTTP response body
- */
-function HealthCheck(requestBody) {
-  // TO-DO: add any additional server checks, e.g. database status
-  // ...
-  // Return a response similar to gRPC Health Check
-  // https://github.com/grpc/grpc/blob/master/doc/health-checking.md
-  var res = {status: 'SERVING'};
-  const responseBody = JSON.stringify(res);
-  return responseBody;
+function HealthCheck() {
+	const resp = {
+		status: "Healthy",
+	};
+
+	return JSON.stringify(resp);
 }
 
-/**
- * CheckAvailability method
- * https://developers.google.com/maps-booking/reference/rest-api-v3/checkavailability-method
- * @param {string} requestBody - HTTP request body
- * @return {string} HTTP response body
- */
+function BatchAvailabilityLookup(requestBody) {
+	const req = JSON.parse(requestBody);
+
+	if (!req.slots || !Array.isArray(req.slots)) {
+		throw new Error("Invalid request: missing or invalid slots");
+	}
+
+	const resp = {
+		slots: req.slots.map((slot) => ({
+			slot,
+			count_available: 1,
+			duration_requirement: "DURATION_REQUIREMENT_UNSPECIFIED",
+		})),
+	};
+
+	return JSON.stringify(resp);
+}
+
 function CheckAvailability(requestBody) {
-  // CheckAvailabilityRequest
-  const req = JSON.parse(requestBody);
-  // TO-DO: validate req, e.g.
-  //   (req.slot !== null && req.slot.merchant_id !== null)
-  // TO-DO: add code to verify the provided slot availability
-  // ...
-  // CheckAvailabilityResponse
-  var resp = {
-    slot: req.slot,
-    count_available: 1,
-    duration_requirement: 'DURATION_REQUIREMENT_UNSPECIFIED'
-    // TO-DO: populate proper values and other fields, such as
-    // availability_update
-  };
-  const responseBody = JSON.stringify(resp);
-  return responseBody;
+	const req = JSON.parse(requestBody);
+
+	if (!req.slot || !req.slot.merchant_id) {
+		throw new Error("Invalid request: missing slot or merchant_id");
+	}
+
+	const resp = {
+		slot: req.slot,
+		count_available: 1,
+		duration_requirement: "DURATION_REQUIREMENT_UNSPECIFIED",
+	};
+
+	return JSON.stringify(resp);
 }
 
-/**
- * CreateBooking method
- * https://developers.google.com/maps-booking/reference/rest-api-v3/createbooking-method
- * @param {string} requestBody - HTTP request body
- * @return {string} HTTP response body
- */
 function CreateBooking(requestBody) {
-  // CreateBookingRequest
-  const req = JSON.parse(requestBody);
-  // TO-DO: validate req, e.g. (req.user_information !== null)
-  // TO-DO: add code to create a booking
-  // ...
-  // CreateBookingResponse
-  var resp = {
-    booking: {
-      booking_id: '1234',
-      slot: req.slot,
-      user_information: {user_id: req.user_information.user_id},
-      payment_information: req.payment_information,
-      status: 'CONFIRMED'
-    }
-  };
-  const responseBody = JSON.stringify(resp);
-  return responseBody;
+	const req = JSON.parse(requestBody);
+
+	if (!req.user_information) {
+		throw new Error("Invalid request: missing user_information");
+	}
+
+	const resp = {
+		booking: {
+			booking_id: "1234",
+			slot: req.slot,
+			user_information: { user_id: req.user_information.user_id },
+			payment_information: req.payment_information,
+			status: "CONFIRMED",
+		},
+	};
+
+	return JSON.stringify(resp);
 }
 
-/**
- * UpdateBooking method
- * https://developers.google.com/maps-booking/reference/rest-api-v3/updatebooking-method
- * @param {string} requestBody - HTTP request body
- * @return {string} HTTP response body
- */
 function UpdateBooking(requestBody) {
-  // UpdateBookingRequest
-  const req = JSON.parse(requestBody);
-  // TO-DO: validate req, e.g.
-  //   (req.booking !== null && req.booking.booking_id !== null)
-  // TO-DO: add code to update the provided booking
-  // ...
-  // UpdateBookingResponse
-  var resp = {
-    booking: {booking_id: req.booking.booking_id, status: req.booking.status}
-  };
-  const responseBody = JSON.stringify(resp);
-  return responseBody;
+	const req = JSON.parse(requestBody);
+
+	if (!req.booking || !req.booking.booking_id) {
+		throw new Error("Invalid request: missing booking or booking_id");
+	}
+
+	const resp = {
+		booking: {
+			booking_id: req.booking.booking_id,
+			status: req.booking.status,
+		},
+	};
+
+	return JSON.stringify(resp);
 }
 
-/**
- * GetBookingStatus method
- * https://developers.google.com/maps-booking/reference/rest-api-v3/getbookingstatus-method
- * @param {string} requestBody - HTTP request body
- * @return {string} HTTP response body
- */
 function GetBookingStatus(requestBody) {
-  // GetBookingStatusRequest
-  const req = JSON.parse(requestBody);
-  // TO-DO: validate req, e.g. (req.booking_id !== null)
-  // TO-DO: add code to retrieve the booking status
-  // ...
-  // GetBookingStatusResponse
-  var resp = {
-    booking_id: req.booking_id,
-    booking_status: 'BOOKING_STATUS_UNSPECIFIED'
-  };
-  const responseBody = JSON.stringify(resp);
-  return responseBody;
+	const req = JSON.parse(requestBody);
+
+	if (!req.booking_id) {
+		throw new Error("Invalid request: missing booking_id");
+	}
+
+	const resp = {
+		booking_id: req.booking_id,
+		booking_status: "BOOKING_STATUS_UNSPECIFIED",
+	};
+
+	return JSON.stringify(resp);
 }
 
-/**
- * ListBookings method
- * https://developers.google.com/maps-booking/reference/rest-api-v3/listbookings-method
- * @param {string} requestBody - HTTP request body
- * @return {string} HTTP response body
- */
 function ListBookings(requestBody) {
-  // ListBookingsRequest
-  const req = JSON.parse(requestBody);
-  console.log(`ListBookings() for user_id: ${req.user_id}`);
-  // TO-DO: validate req, e.g. (req.user_id !== null)
-  // TO-DO: add code to fetch all bookings for the user_id
-  // ...
-  // ListBookingsResponse
-  var resp = {bookings: [{}]};
-  const responseBody = JSON.stringify(resp);
-  return responseBody;
+	const req = JSON.parse(requestBody);
+
+	if (!req.user_id) {
+		throw new Error("Invalid request: missing user_id");
+	}
+
+	const resp = { bookings: [{ booking_id: "1234", status: "CONFIRMED" }] };
+
+	return JSON.stringify(resp);
 }
 
-
-/**
- * CheckOrderFulfillability method (Order-based Booking Server only)
- * https://developers.google.com/maps-booking/reference/rest-api-v3/checkorderfulfillability-method
- * @param {string} requestBody - HTTP request body
- * @return {string} HTTP response body
- */
 function CheckOrderFulfillability(requestBody) {
-  // CheckOrderFulfillabilityRequest
-  const req = JSON.parse(requestBody);
-  // TO-DO: validate req, e.g. (req.merchant_id !== null)
-  // TO-DO: add code to validate individual items and calculate the total price
-  // ...
-  // CheckOrderFulfillabilityResponse
-  var resp = {
-    fulfillability: {
-      result: 'CAN_FULFILL',
-      item_fulfillability: [{}]  // individual item fullfilability
-    },
-    fees_and_taxes: {
-      price_micros: 1000000,  // total price in micros, e.g. 1USD = 1000000
-      currency_code: 'USD'
-    }
-  };
-  const responseBody = JSON.stringify(resp);
-  return responseBody;
+	const req = JSON.parse(requestBody);
+
+	if (!req.merchant_id) {
+		throw new Error("Invalid request: missing merchant_id");
+	}
+
+	const resp = {
+		fulfillability: {
+			result: "CAN_FULFILL",
+			item_fulfillability: [{}],
+		},
+		fees_and_taxes: {
+			price_micros: 1000000,
+			currency_code: "USD",
+		},
+	};
+
+	return JSON.stringify(resp);
 }
 
-/**
- * CreateOrder method (Order-based Booking Server only)
- * https://developers.google.com/maps-booking/reference/rest-api-v3/createorder-method
- * @param {string} requestBody - HTTP request body
- * @return {string} HTTP response body
- */
 function CreateOrder(requestBody) {
-  // CreateOrderRequest
-  const req = JSON.parse(requestBody);
-  // TO-DO: validate req, e.g. (req.user_information !== null)
-  // TO-DO: check for req.idempotency_token uniqueness
-  // TO-DO: create and process the order
-  // ...
-  // CreateOrderResponse
-  var resp = {
-    order: {
-      order_id: '123',  // new order id
-      merchant_id: req.order.mercant_id,
-      item: [{}]  // populate individual LineItems, etc.
-    }
-  };
-  const responseBody = JSON.stringify(resp);
-  return responseBody;
+	const req = JSON.parse(requestBody);
+
+	if (!req.user_information) {
+		throw new Error("Invalid request: missing user_information");
+	}
+
+	const resp = {
+		order: {
+			order_id: "123",
+			merchant_id: req.order.merchant_id,
+			item: [{}],
+		},
+	};
+
+	return JSON.stringify(resp);
 }
 
-/**
- * ListOrders method (Order-based Booking Server only)
- * https://developers.google.com/maps-booking/reference/rest-api-v3/listorders-method
- * @param {string} requestBody - HTTP request body
- * @return {string} HTTP response body
- */
 function ListOrders(requestBody) {
-  // ListOrdersRequest
-  const req = JSON.parse(requestBody);
-  // TO-DO: validate req, e.g. if ("user_id" in req || "order_ids" in req)
-  // TO-DO: fetch orders for req.user_id or a list of req.order_ids
-  // ...
-  // ListOrdersResponse
-  var resp = {
-    order: [{}]  // populate all orders for the user_id or order_ids
-  };
-  const responseBody = JSON.stringify(resp);
-  return responseBody;
+	const req = JSON.parse(requestBody);
+
+	if (!req.user_id && !req.order_ids) {
+		throw new Error("Invalid request: missing user_id or order_ids");
+	}
+
+	const resp = {
+		order: [{}],
+	};
+
+	return JSON.stringify(resp);
 }
 
+function BatchGetWaitEstimates(requestBody) {
+	const req = JSON.parse(requestBody);
+
+	if (!req.merchant_id || !req.service_id || !req.party_size) {
+		throw new Error(
+			"Invalid request: missing merchant_id, service_id or party_size"
+		);
+	}
+
+	const resp = {
+		waitlist_status: "OPEN",
+		wait_estimate: [
+			{
+				party_size: req.party_size,
+				wait_length: {
+					parties_ahead_count: 5,
+					estimated_seat_time_range: {
+						start_seconds: 123456,
+						end_seconds: 123456,
+					},
+				},
+				waitlist_confirmation_mode:
+					"WAITLIST_CONFIRMATION_MODE_SYNCHRONOUS",
+			},
+		],
+	};
+
+	return JSON.stringify(resp);
+}
+
+function CreateWaitlistEntry(requestBody) {
+	const req = JSON.parse(requestBody);
+
+	if (!req.merchant_id || !req.service_id || !req.party_size) {
+		throw new Error(
+			"Invalid request: missing merchant_id, service_id or party_size"
+		);
+	}
+
+	const resp = {
+		waitlist_entry_id: "1234",
+		waitlist_business_logic_failure: null,
+	};
+
+	return JSON.stringify(resp);
+}
+
+function DeleteWaitlistEntry(requestBody) {
+	const req = JSON.parse(requestBody);
+
+	if (!req.waitlist_entry_id) {
+		throw new Error("Invalid request: missing waitlist_entry_id");
+	}
+
+	const resp = {};
+
+	return JSON.stringify(resp);
+}
+
+function GetWaitlistEntry(requestBody) {
+	const req = JSON.parse(requestBody);
+
+	if (!req.waitlist_entry_id) {
+		throw new Error("Invalid request: missing waitlist_entry_id");
+	}
+
+	const resp = {
+		waitlist_entry: {
+			waitlist_entry_state: "CANCELED",
+			waitlist_entry_state_times: {
+				created_time_seconds: 123456,
+				canceled_time_seconds: 123456,
+			},
+			wait_estimate: {
+				party_size: 5,
+			},
+		},
+	};
+
+	return JSON.stringify(resp);
+}
 
 module.exports.HealthCheck = HealthCheck;
-// Booking-flow Booking Server methods
+module.exports.BatchAvailabilityLookup = BatchAvailabilityLookup;
 module.exports.CheckAvailability = CheckAvailability;
 module.exports.CreateBooking = CreateBooking;
-module.exports.UpdateBooking = UpdateBooking;
 module.exports.GetBookingStatus = GetBookingStatus;
 module.exports.ListBookings = ListBookings;
-// Order-based Booking Server methods
+module.exports.UpdateBooking = UpdateBooking;
 module.exports.CheckOrderFulfillability = CheckOrderFulfillability;
 module.exports.CreateOrder = CreateOrder;
 module.exports.ListOrders = ListOrders;
+module.exports.BatchGetWaitEstimates = BatchGetWaitEstimates;
+module.exports.CreateWaitlistEntry = CreateWaitlistEntry;
+module.exports.DeleteWaitlistEntry = DeleteWaitlistEntry;
+module.exports.GetWaitlistEntry = GetWaitlistEntry;

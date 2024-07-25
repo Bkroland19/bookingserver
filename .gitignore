@@ -1,0 +1,29 @@
+# Node.js dependencies
+node_modules/
+
+# Environment variable file
+.env
+
+# Logs
+*.log
+
+# Directory for coverage reports
+coverage/
+
+# npm debug file
+npm-debug.log*
+
+# Yarn integrity file
+.yarn-integrity
+
+# Operating system files
+.DS_Store
+Thumbs.db
+
+# IDE-specific files
+.vscode/
+.idea/
+*.suo
+*.ntvs_analysis.dat
+*.njsproj
+*.sln
