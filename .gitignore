@@ -27,3 +27,11 @@ Thumbs.db
 *.ntvs_analysis.dat
 *.njsproj
 *.sln
+
+
+.vscode/
+.idea/
+*.suo
+*.ntvs_analysis.dat
+*.njsproj
+*.sln
